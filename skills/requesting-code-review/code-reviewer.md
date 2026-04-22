@@ -17,15 +17,22 @@ You are reviewing code changes for production readiness.
 
 {PLAN_REFERENCE}
 
-## Git Range to Review
+## Commit Range to Review
 
 **Base:** {BASE_SHA}
 **Head:** {HEAD_SHA}
 
 ```bash
+# git:
 git diff --stat {BASE_SHA}..{HEAD_SHA}
 git diff {BASE_SHA}..{HEAD_SHA}
+
+# jj (detect with: [ -d .jj ] && echo jj || echo git):
+jj diff --summary --from {BASE_SHA} --to {HEAD_SHA}
+jj diff --from {BASE_SHA} --to {HEAD_SHA}
 ```
+
+> **jj diff:** `--summary` is the jj equivalent of `git diff --stat`. The `--from`/`--to` flags accept commit IDs from `jj log -r <rev> --no-graph -T 'commit_id'`. In colocated repos, git SHAs and jj commit IDs are the same values.
 
 ## Review Checklist
 

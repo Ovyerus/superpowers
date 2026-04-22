@@ -1,15 +1,23 @@
 ---
 name: using-git-worktrees
-description: Use when starting feature work that needs isolation from current workspace or before executing implementation plans - creates isolated git worktrees with smart directory selection and safety verification
+description: Use when starting feature work that needs isolation from current workspace or before executing implementation plans - creates isolated git worktrees or jj workspaces with smart directory selection and safety verification
 ---
 
-# Using Git Worktrees
+# Using Git Worktrees / jj Workspaces
 
 ## Overview
 
-Git worktrees create isolated workspaces sharing the same repository, allowing work on multiple branches simultaneously without switching.
+Git worktrees (or jj workspaces) create isolated workspaces sharing the same repository, allowing work on multiple branches simultaneously without switching.
 
 **Core principle:** Systematic directory selection + safety verification = reliable isolation.
+
+## VCS Detection
+
+```bash
+[ -d .jj ] && echo "USE_JJ=true" || echo "USE_JJ=false"
+```
+
+All steps below show `# git:` and `# jj:` variants. Detect once, apply throughout.
 
 **Announce at start:** "I'm using the using-git-worktrees skill to set up an isolated workspace."
 
@@ -62,6 +70,7 @@ git check-ignore -q .worktrees 2>/dev/null || git check-ignore -q worktrees 2>/d
 **If NOT ignored:**
 
 Per Jesse's rule "Fix broken things immediately":
+
 1. Add appropriate line to .gitignore
 2. Commit the change
 3. Proceed with worktree creation
@@ -77,7 +86,11 @@ No .gitignore verification needed - outside project entirely.
 ### 1. Detect Project Name
 
 ```bash
+# git:
 project=$(basename "$(git rev-parse --show-toplevel)")
+
+# jj:
+project=$(basename "$(jj root)")
 ```
 
 ### 2. Create Worktree
@@ -93,10 +106,19 @@ case $LOCATION in
     ;;
 esac
 
-# Create worktree with new branch
+# git:
 git worktree add "$path" -b "$BRANCH_NAME"
 cd "$path"
+
+# jj:
+# Step 1: Create workspace (does NOT auto-create a bookmark)
+jj workspace add "$path"
+cd "$path"
+# Step 2: Create bookmark so this workspace has a named branch
+jj bookmark create "$BRANCH_NAME" -r @
 ```
+
+> **jj workspace semantics:** `jj workspace add` creates the workspace at the current `@` revision. It does NOT create a bookmark. You must run `jj bookmark create <name> -r @` in the new workspace to name the branch. `$BRANCH_NAME` is the intended feature/bookmark name.
 
 ### 3. Run Project Setup
 
@@ -143,15 +165,18 @@ Ready to implement <feature-name>
 
 ## Quick Reference
 
-| Situation | Action |
-|-----------|--------|
-| `.worktrees/` exists | Use it (verify ignored) |
-| `worktrees/` exists | Use it (verify ignored) |
-| Both exist | Use `.worktrees/` |
-| Neither exists | Check CLAUDE.md → Ask user |
-| Directory not ignored | Add to .gitignore + commit |
-| Tests fail during baseline | Report failures + ask |
-| No package.json/Cargo.toml | Skip dependency install |
+| Situation                  | git                                   | jj                                                                |
+| -------------------------- | ------------------------------------- | ----------------------------------------------------------------- |
+| `.worktrees/` exists       | Use it (verify ignored)               | Use it (verify ignored)                                           |
+| `worktrees/` exists        | Use it (verify ignored)               | Use it (verify ignored)                                           |
+| Both exist                 | Use `.worktrees/`                     | Use `.worktrees/`                                                 |
+| Neither exists             | Check CLAUDE.md → Ask user            | Check CLAUDE.md → Ask user                                        |
+| Directory not ignored      | Add to .gitignore + commit            | Add to .gitignore + `jj file untrack` + `jj commit`               |
+| Detect project root        | `git rev-parse --show-toplevel`       | `jj root`                                                         |
+| Create workspace           | `git worktree add "$path" -b "$NAME"` | `jj workspace add "$path"` then `jj bookmark create "$NAME" -r @` |
+| Check ignored              | `git check-ignore -q <dir>`           | `git check-ignore -q <dir>` (same)                                |
+| Tests fail during baseline | Report failures + ask                 | Report failures + ask                                             |
+| No package.json/Cargo.toml | Skip dependency install               | Skip dependency install                                           |
 
 ## Common Mistakes
 
@@ -183,6 +208,7 @@ You: I'm using the using-git-worktrees skill to set up an isolated workspace.
 [Check .worktrees/ - exists]
 [Verify ignored - git check-ignore confirms .worktrees/ is ignored]
 [Create worktree: git worktree add .worktrees/auth -b feature/auth]
+  # jj: jj workspace add .worktrees/auth  →  cd .worktrees/auth  →  jj bookmark create feature/auth -r @
 [Run npm install]
 [Run npm test - 47 passing]
 
@@ -194,6 +220,7 @@ Ready to implement auth feature
 ## Red Flags
 
 **Never:**
+
 - Create worktree without verifying it's ignored (project-local)
 - Skip baseline test verification
 - Proceed with failing tests without asking
@@ -201,6 +228,7 @@ Ready to implement auth feature
 - Skip CLAUDE.md check
 
 **Always:**
+
 - Follow directory priority: existing > CLAUDE.md > ask
 - Verify directory is ignored for project-local
 - Auto-detect and run project setup
@@ -209,10 +237,12 @@ Ready to implement auth feature
 ## Integration
 
 **Called by:**
+
 - **brainstorming** (Phase 4) - REQUIRED when design is approved and implementation follows
 - **subagent-driven-development** - REQUIRED before executing any tasks
 - **executing-plans** - REQUIRED before executing any tasks
 - Any skill needing isolated workspace
 
 **Pairs with:**
+
 - **finishing-a-development-branch** - REQUIRED for cleanup after work complete

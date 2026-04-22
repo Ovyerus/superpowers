@@ -9,6 +9,12 @@ Dispatch superpowers:code-reviewer subagent to catch issues before they cascade.
 
 **Core principle:** Review early, review often.
 
+## VCS Detection
+
+```bash
+[ -d .jj ] && echo "USE_JJ=true" || echo "USE_JJ=false"
+```
+
 ## When to Request Review
 
 **Mandatory:**
@@ -23,10 +29,16 @@ Dispatch superpowers:code-reviewer subagent to catch issues before they cascade.
 
 ## How to Request
 
-**1. Get git SHAs:**
+**1. Get commit SHAs:**
 ```bash
-BASE_SHA=$(git rev-parse HEAD~1)  # or origin/main
+# git:
+BASE_SHA=$(git rev-parse HEAD~1)  # or: git rev-parse origin/main
 HEAD_SHA=$(git rev-parse HEAD)
+
+# jj:
+BASE_SHA=$(jj log -r @- --no-graph -T 'commit_id')  # parent of current change
+HEAD_SHA=$(jj log -r @ --no-graph -T 'commit_id')
+# To use named base: BASE_SHA=$(jj log -r 'lca(@, main)' --no-graph -T 'commit_id')
 ```
 
 **2. Dispatch code-reviewer subagent:**
@@ -53,8 +65,14 @@ Use Task tool with superpowers:code-reviewer type, fill template at `code-review
 
 You: Let me request code review before proceeding.
 
+# git:
 BASE_SHA=$(git log --oneline | grep "Task 1" | head -1 | awk '{print $1}')
 HEAD_SHA=$(git rev-parse HEAD)
+
+# jj:
+# Find the right change: jj log --no-graph -T 'commit_id.short() ++ " " ++ description.first_line() ++ "\n"'
+BASE_SHA=$(jj log -r <change-matching-Task-1> --no-graph -T 'commit_id')
+HEAD_SHA=$(jj log -r @ --no-graph -T 'commit_id')
 
 [Dispatch superpowers:code-reviewer subagent]
   WHAT_WAS_IMPLEMENTED: Verification and repair functions for conversation index
