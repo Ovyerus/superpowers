@@ -104,8 +104,8 @@ generate_plugin_json() {
     "email": "jesse@fsck.com",
     "url": "https://github.com/obra"
   },
-  "homepage": "https://github.com/obra/superpowers",
-  "repository": "https://github.com/obra/superpowers",
+  "homepage": "https://github.com/ovyerus/superpowers",
+  "repository": "https://github.com/ovyerus/superpowers",
   "license": "MIT",
   "keywords": [
     "brainstorming",
@@ -350,7 +350,7 @@ if [[ $BOOTSTRAP -eq 1 ]]; then
 Creates \`plugins/superpowers/\` from scratch: upstream content via rsync, \`.codex-plugin/plugin.json\` regenerated inline, brand assets seeded from a local Brand Assets directory.
 
 Run via: \`scripts/sync-to-codex-plugin.sh --bootstrap --assets-src <path>\`
-Upstream commit: https://github.com/obra/superpowers/commit/$UPSTREAM_SHA
+Upstream commit: https://github.com/ovyerus/superpowers/commit/$UPSTREAM_SHA
 
 This is a one-time bootstrap. Subsequent syncs will be normal (non-bootstrap) runs and will not touch the \`assets/\` directory."
 else
@@ -358,7 +358,7 @@ else
   PR_BODY="Automated sync from superpowers upstream \`main\` @ \`$UPSTREAM_SHORT\` (v$UPSTREAM_VERSION).
 
 Run via: \`scripts/sync-to-codex-plugin.sh\`
-Upstream commit: https://github.com/obra/superpowers/commit/$UPSTREAM_SHA
+Upstream commit: https://github.com/ovyerus/superpowers/commit/$UPSTREAM_SHA
 
 Running the sync tool again against the same upstream SHA should produce a PR with an identical diff — use that to verify the tool is behaving."
 fi
@@ -366,7 +366,7 @@ fi
 git commit --quiet -m "$COMMIT_TITLE
 
 Automated sync via scripts/sync-to-codex-plugin.sh
-Upstream: https://github.com/obra/superpowers/commit/$UPSTREAM_SHA
+Upstream: https://github.com/ovyerus/superpowers/commit/$UPSTREAM_SHA
 Branch:   $SYNC_BRANCH"
 
 echo "Pushing $SYNC_BRANCH to $FORK..."

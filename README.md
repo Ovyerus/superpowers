@@ -62,7 +62,7 @@ for Claude Code.
 In Claude Code, register the marketplace first:
 
 ```bash
-/plugin marketplace add obra/superpowers-marketplace
+/plugin marketplace add ovyerus/superpowers-marketplace
 ```
 
 Then install the plugin from this marketplace:
@@ -108,7 +108,7 @@ or search for "superpowers" in the plugin marketplace.
 Tell OpenCode:
 
 ```
-Fetch and follow instructions from https://raw.githubusercontent.com/obra/superpowers/refs/heads/main/.opencode/INSTALL.md
+Fetch and follow instructions from https://raw.githubusercontent.com/ovyerus/superpowers/refs/heads/main/.opencode/INSTALL.md
 ```
 
 **Detailed docs:** [docs/README.opencode.md](docs/README.opencode.md)
@@ -116,14 +116,14 @@ Fetch and follow instructions from https://raw.githubusercontent.com/obra/superp
 ### GitHub Copilot CLI
 
 ```bash
-copilot plugin marketplace add obra/superpowers-marketplace
+copilot plugin marketplace add ovyerus/superpowers-marketplace
 copilot plugin install superpowers@superpowers-marketplace
 ```
 
 ### Gemini CLI
 
 ```bash
-gemini extensions install https://github.com/obra/superpowers
+gemini extensions install https://github.com/ovyerus/superpowers
 ```
 
 To update:
@@ -241,6 +241,6 @@ the folks at [Prime Radiant](https://primeradiant.com).
 
 - **Discord**: [Join us](https://discord.gg/35wsABTejz) for community support,
   questions, and sharing what you're building with Superpowers
-- **Issues**: https://github.com/obra/superpowers/issues
+- **Issues**: https://github.com/ovyerus/superpowers/issues
 - **Release announcements**: [Sign up](https://primeradiant.com/superpowers/) to
   get notified about new versions

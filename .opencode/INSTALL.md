@@ -10,7 +10,7 @@ Add superpowers to the `plugin` array in your `opencode.json` (global or project
 
 ```json
 {
-  "plugin": ["superpowers@git+https://github.com/obra/superpowers.git"]
+  "plugin": ["superpowers@git+https://github.com/ovyerus/superpowers.git"]
 }
 ```
 
@@ -52,7 +52,9 @@ To pin a specific version:
 
 ```json
 {
-  "plugin": ["superpowers@git+https://github.com/obra/superpowers.git#v5.0.3"]
+  "plugin": [
+    "superpowers@git+https://github.com/ovyerus/superpowers.git#v5.0.3"
+  ]
 }
 ```
 
@@ -72,6 +74,7 @@ To pin a specific version:
 ### Tool mapping
 
 When skills reference Claude Code tools:
+
 - `TodoWrite` → `todowrite`
 - `Task` with subagents → `@mention` syntax
 - `Skill` tool → OpenCode's native `skill` tool
@@ -79,5 +82,5 @@ When skills reference Claude Code tools:
 
 ## Getting Help
 
-- Report issues: https://github.com/obra/superpowers/issues
-- Full documentation: https://github.com/obra/superpowers/blob/main/docs/README.opencode.md
+- Report issues: https://github.com/ovyerus/superpowers/issues
+- Full documentation: https://github.com/ovyerus/superpowers/blob/main/docs/README.opencode.md
